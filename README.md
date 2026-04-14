@@ -1,59 +1,211 @@
-# ChwTodoList
+# Angular Notes (Basic to Intermediate)
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 21.2.7.
+---
 
-## Development server
+## 🔹 Introduction
 
-To start a local development server, run:
+Angular is a **Single Page Application (SPA)** framework used to build dynamic web applications.
+
+---
+
+## 🔹 Setup & Installation
+
+### Step 1: Install Node.js
+
+Download and install Node.js.
+
+### Step 2: Install Angular CLI
 
 ```bash
+npm i -g @angular/cli
+```
+
+### Step 3: Fix PowerShell Issue (Windows)
+
+```powershell
+Set-ExecutionPolicy RemoteSigned -Scope CurrentUser
+```
+
+---
+
+## 🔹 Creating Angular Project
+
+```bash
+ng new chw-todo-list
+cd chw-todo-list
 ng serve
 ```
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
+👉 Open browser:
+http://localhost:4200
 
-## Code scaffolding
+---
 
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
+## 🔹 Basic Understanding
 
-```bash
-ng generate component component-name
-```
+* Angular creates a **Single Page Application**
+* Modify `app.component.html` to test UI changes
 
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
+---
 
-```bash
-ng generate --help
-```
+## 🔹 Bootstrap Integration
 
-## Building
-
-To build the project run:
+### Install Bootstrap
 
 ```bash
-ng build
+npm install bootstrap
 ```
 
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
+### Add in `angular.json`
 
-## Running unit tests
+```json
+"styles": [
+  "src/styles.css",
+  "./node_modules/bootstrap/dist/css/bootstrap.min.css"
+],
+"scripts": [
+  "node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"
+]
+```
 
-To execute unit tests with the [Vitest](https://vitest.dev/) test runner, use the following command:
+---
+
+## 🔹 Generate Components
 
 ```bash
-ng test
+ng generate component mycomponent/todos
 ```
 
-## Running end-to-end tests
+---
 
-For end-to-end (e2e) testing, run:
+## 🔹 Data Binding
+
+```html
+{{ yourVariable }}
+```
+
+---
+
+## 🔹 Loop in Angular (*ngFor)
+
+```html
+<ul>
+  <li *ngFor="let todo of todos">
+    {{todo.sno}} - {{todo.title}} - {{todo.description}}
+  </li>
+</ul>
+```
+
+---
+
+## 🔹 Conditional Rendering (*ngIf with else)
+
+```html
+<div *ngIf="todos.length > 0; else noTodos">
+
+  <div *ngFor="let todo of todos">
+    <app-todo-item 
+      [todo]="todo"
+      (todoDelete)="deleteTodo($event)">
+    </app-todo-item>
+  </div>
+
+</div>
+
+<ng-template #noTodos>
+  <h4>No Todos to display</h4>
+</ng-template>
+```
+
+---
+
+## 🔹 Local Storage Handling (SSR Safe)
+
+```ts
+constructor(@Inject(PLATFORM_ID) private platformId: Object) {}
+
+ngOnInit() {
+  if (isPlatformBrowser(this.platformId)) {
+
+    const localitem = localStorage.getItem("todos");
+
+    if (localitem == null) {
+      this.todos = [];
+    } else {
+      this.todos = JSON.parse(localitem);
+    }
+  }
+}
+
+deleteTodo(todo: Todo) {
+  const index = this.todos.indexOf(todo);
+
+  if (index !== -1) {
+    this.todos.splice(index, 1);
+  }
+
+  localStorage.setItem("todos", JSON.stringify(this.todos));
+}
+
+addTodo(todo: Todo) {
+  todo.sno = this.todos.length + 1;
+
+  this.todos.push(todo);
+  localStorage.setItem("todos", JSON.stringify(this.todos));
+}
+```
+
+---
+
+## 🔹 Routing
+
+### `app.routes.ts`
+
+```ts
+export const routes: Routes = [
+  { path: '', component: Todos },
+  { path: 'about', component: About }
+];
+```
+
+---
+
+## 🔹 HTTP Interceptor (Concept)
+
+* Used to intercept HTTP requests/responses
+* Useful for:
+
+  * Adding tokens (JWT)
+  * Logging
+  * Error handling
+
+---
+
+## 🔹 Build Command
 
 ```bash
-ng e2e
+ng build --prod
 ```
 
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
+---
 
-## Additional Resources
+## 🔹 Summary
 
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+* Angular CLI setup
+* Component creation
+* Data binding (`{{ }}`)
+* Structural directives (`*ngFor`, `*ngIf`)
+* LocalStorage integration
+* Routing setup
+* Bootstrap integration
+
+---
+
+## 🔹 Future Enhancements
+
+* Add Edit Todo feature
+* Add checkbox (mark complete)
+* Backend integration (Spring Boot)
+* Authentication with HTTP Interceptor
+
+---
